@@ -1,0 +1,193 @@
+﻿
+07-28 02:54:42.215  4391  4461 I VRI[nurutouch]@18f4393: synced displayState. AttachInfo displayState=2
+07-28 02:54:42.215  4391  4461 I VRI[nurutouch]@18f4393: setView = android.widget.FrameLayout@e0e4671 IsHRR=false 
+mFlingFrameRateChange=0 TM=true
+07-28 02:54:42.272  4391  4461 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= VRI[nurutouch]@18f4393 
+mNativeObject= 0xb4000075ebc6a400 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3603 
+android.view.ViewRootImpl.relayoutWindow:11813 android.view.ViewRootImpl.performTraversals:4840 
+android.view.ViewRootImpl.doTraversal:3959 android.view.ViewRootImpl$TraversalRunnable.run:13034 
+android.view.Choreographer$CallbackRecord.run:1961 android.view.Choreographer$CallbackRecord.run:1970 
+android.view.Choreographer.doCallbacks:1423 android.view.Choreographer.doFrame:1348 
+android.view.Choreographer$FrameDisplayEventReceiver.run:1930 
+07-28 02:54:42.272  4391  4461 I BLASTBufferQueue_Java: update, w= 1080 h= 2316 mName = VRI[nurutouch]@18f4393 
+mNativeObject= 0xb4000075ebc6a400 sc.mNativeObject= 0xb4000075b92c0080 format= -3 caller= 
+android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3608 android.view.ViewRootImpl.relayoutWindow:11813 
+android.view.ViewRootImpl.performTraversals:4840 android.view.ViewRootImpl.doTraversal:3959 
+android.view.ViewRootImpl$TraversalRunnable.run:13034 android.view.Choreographer$CallbackRecord.run:1961 
+07-28 02:54:42.273  4391  4461 I VRI[nurutouch]@18f4393: Relayout returned: old=(0,0,1080,2316) new=(0,0,1080,2316) 
+relayoutAsync=false req=(1080,2316)0 dur=5 res=0x3 s={true 0xb4000076fae4b100} ch=true seqId=0
+07-28 02:54:42.273  4391  4461 I VRI[nurutouch]@18f4393: performConfigurationChange setNightDimText nightDimLevel=0
+07-28 02:54:42.273  4391  4461 D VRI[nurutouch]@18f4393: mThreadedRenderer.initialize() mSurface={isValid=true 
+0xb4000076fae4b100} hwInitialized=true
+07-28 02:54:42.274  4391  4461 D VRI[nurutouch]@18f4393: reportNextDraw 
+android.view.ViewRootImpl.performTraversals:5507 android.view.ViewRootImpl.doTraversal:3959 
+android.view.ViewRootImpl$TraversalRunnable.run:13034 android.view.Choreographer$CallbackRecord.run:1961 
+android.view.Choreographer$CallbackRecord.run:1970 
+07-28 02:54:42.274  4391  4461 D VRI[nurutouch]@18f4393: Setup new sync=wmsSync-VRI[nurutouch]@18f4393#12
+07-28 02:54:42.274  4391  4461 I VRI[nurutouch]@18f4393: Creating new active sync group VRI[nurutouch]@18f4393#13
+07-28 02:54:42.274  4391  4461 D VRI[nurutouch]@18f4393: registerCallbacksForSync syncBuffer=false
+07-28 02:54:42.278  4391  4630 D VRI[nurutouch]@18f4393: Received frameDrawingCallback syncResult=0 frameNum=1.
+07-28 02:54:42.279  4391  4630 I VRI[nurutouch]@18f4393: mWNT: t=0xb400007700390400 
+mBlastBufferQueue=0xb4000075ebc6a400 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= 
+android.view.ViewRootImpl$12.onFrameDraw:15561 android.view.ThreadedRenderer$1.onFrameDraw:751 <bottom of call stack> 
+07-28 02:54:42.279  4391  4630 I VRI[nurutouch]@18f4393: Setting up sync and frameCommitCallback
+07-28 02:54:42.281  4391  4632 I BLASTBufferQueue: [VRI[nurutouch]@18f4393#7871](f:0,a:0,s:0) onFrameAvailable the 
+first frame is available
+07-28 02:54:42.282  4391  4632 I VRI[nurutouch]@18f4393: Received frameCommittedCallback lastAttemptedDrawFrameNum=1 
+didProduceBuffer=true
+07-28 02:54:42.286  4391  4461 D VRI[nurutouch]@18f4393: reportDrawFinished seqId=0
+07-28 02:54:45.047  4391  4631 I VRI[nurutouch]@18f4393: mWNT: t=0xb400007700390600 
+mBlastBufferQueue=0xb4000075ebc6a400 fn= 2 HdrRenderState mRenderHdrSdrRatio=1.0 caller= 
+android.view.SyncRtSurfaceTransactionApplier.applyTransaction:102 
+android.view.SyncRtSurfaceTransactionApplier.lambda$scheduleApply$0:75 
+android.view.SyncRtSurfaceTransactionApplier.$r8$lambda$afI4fXg3U3-nBZQEDQMiNy-B06s:0 
+07-28 02:54:45.047  4391  4631 I VRI[nurutouch]@18f4393: mWNT: t=0xb400007700390800 
+mBlastBufferQueue=0xb4000075ebc6a400 fn= 2 HdrRenderState mRenderHdrSdrRatio=1.0 caller= 
+android.view.SyncRtSurfaceTransactionApplier.applyTransaction:102 
+android.view.SyncRtSurfaceTransactionApplier.lambda$scheduleApply$0:75 
+android.view.SyncRtSurfaceTransactionApplier.$r8$lambda$afI4fXg3U3-nBZQEDQMiNy-B06s:0 
+07-28 02:54:45.063  4391  4630 I VRI[nurutouch]@18f4393: mWNT: t=0xb400007700390a00 
+mBlastBufferQueue=0xb4000075ebc6a400 fn= 3 HdrRenderState mRenderHdrSdrRatio=1.0 caller= 
+android.view.SyncRtSurfaceTransactionApplier.applyTransaction:102 
+android.view.SyncRtSurfaceTransactionApplier.lambda$scheduleApply$0:75 
+android.view.SyncRtSurfaceTransactionApplier.$r8$lambda$afI4fXg3U3-nBZQEDQMiNy-B06s:0 
+07-28 02:54:45.079  4391  4631 I VRI[nurutouch]@18f4393: mWNT: t=0xb400007700390c00 
+mBlastBufferQueue=0xb4000075ebc6a400 fn= 4 HdrRenderState mRenderHdrSdrRatio=1.0 caller= 
+android.view.SyncRtSurfaceTransactionApplier.applyTransaction:102 
+android.view.SyncRtSurfaceTransactionApplier.lambda$scheduleApply$0:75 
+android.view.SyncRtSurfaceTransactionApplier.$r8$lambda$afI4fXg3U3-nBZQEDQMiNy-B06s:0 
+07-28 02:54:45.096  4391  4630 I VRI[nurutouch]@18f4393: mWNT: t=0xb4000077003ac000 
+mBlastBufferQueue=0xb4000075ebc6a400 fn= 5 HdrRenderState mRenderHdrSdrRatio=1.0 caller= 
+android.view.SyncRtSurfaceTransactionApplier.applyTransaction:102 
+android.view.SyncRtSurfaceTransactionApplier.lambda$scheduleApply$0:75 
+android.view.SyncRtSurfaceTransactionApplier.$r8$lambda$afI4fXg3U3-nBZQEDQMiNy-B06s:0 
+07-28 02:54:45.116  4391  4461 I VRI[nurutouch]@18f4393: Relayout returned: old=(0,0,1080,2316) new=(0,0,1080,2316) 
+relayoutAsync=false req=(1080,2316)8 dur=2 res=0x2 s={false 0x0} ch=true seqId=0
+07-28 02:54:45.117  4391  4461 D VRI[nurutouch]@18f4393: Not drawing due to not visible. Reason=View.GONE
+07-28 02:54:45.117  4391  4461 I VRI[nurutouch]@18f4393: dispatchDetachedFromWindow
+07-28 02:57:25.847  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:57:26.158  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: []
+07-28 02:57:26.161  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: CATCH-ALL triggered. Chord is empty, 
+gestures did not match.
+07-28 02:57:27.797  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=41, pos=Offset(173.5, 69.7), 
+active_count=1
+07-28 02:57:27.799  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(173.5, 69.7) -> dot=1 
+(minDist=6.742839646746462, threshold=76.80000000000001)
+07-28 02:57:27.944  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:57:28.246  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: [1]
+07-28 02:57:28.246  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: Evaluated as tapBraille. Pointers: 
+1, chord: [1]
+07-28 02:57:28.251  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Evaluating tapBraille. targetDots=[1], 
+tappedDots=[1]
+07-28 02:57:28.251  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Result isCorrect=true, errorType=generic
+07-28 02:57:40.071  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:57:40.372  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: []
+07-28 02:57:40.372  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: CATCH-ALL triggered. Chord is empty, 
+gestures did not match.
+07-28 02:57:41.750  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=43, pos=Offset(199.8, 180.6), 
+active_count=1
+07-28 02:57:41.750  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(199.8, 180.6) -> dot=2 
+(minDist=16.273933396789023, threshold=76.80000000000001)
+07-28 02:57:41.855  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:57:42.157  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: [2]
+07-28 02:57:42.157  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: Evaluated as tapBraille. Pointers: 
+1, chord: [2]
+07-28 02:57:42.158  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Evaluating tapBraille. targetDots=[1, 
+2], tappedDots=[2]
+07-28 02:57:42.158  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Result isCorrect=false, 
+errorType=dropped_dot
+07-28 02:57:43.553  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=44, pos=Offset(185.6, 53.8), 
+active_count=1
+07-28 02:57:43.553  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(185.6, 53.8) -> dot=1 
+(minDist=18.48776477001494, threshold=76.80000000000001)
+07-28 02:57:43.607  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=45, pos=Offset(184.8, 158.4), 
+active_count=2
+07-28 02:57:43.607  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(184.8, 158.4) -> dot=2 
+(minDist=13.441425404120345, threshold=76.80000000000001)
+07-28 02:57:44.074  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:57:44.376  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: [1, 2]
+07-28 02:57:44.376  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: Evaluated as tapBraille. Pointers: 
+2, chord: [1, 2]
+07-28 02:57:44.376  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Evaluating tapBraille. targetDots=[1, 
+2], tappedDots=[1, 2]
+07-28 02:57:44.376  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Result isCorrect=true, errorType=generic
+07-28 02:58:00.527  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=46, pos=Offset(177.1, 50.4), 
+active_count=1
+07-28 02:58:00.528  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(177.1, 50.4) -> dot=1 
+(minDist=13.925842201619773, threshold=76.80000000000001)
+07-28 02:58:00.586  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=47, pos=Offset(187.6, 156.2), 
+active_count=2
+07-28 02:58:00.586  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(187.6, 156.2) -> dot=2 
+(minDist=13.894188996995249, threshold=76.80000000000001)
+07-28 02:58:01.128  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:01.430  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: [1, 2]
+07-28 02:58:01.431  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: Evaluated as tapBraille. Pointers: 
+2, chord: [1, 2]
+07-28 02:58:01.431  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Evaluating tapBraille. targetDots=[1], 
+tappedDots=[1, 2]
+07-28 02:58:01.431  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Result isCorrect=false, 
+errorType=extra_dots
+07-28 02:58:03.407  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=48, pos=Offset(179.9, 58.7), 
+active_count=1
+07-28 02:58:03.407  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(179.9, 58.7) -> dot=1 
+(minDist=8.207287744345924, threshold=76.80000000000001)
+07-28 02:58:03.420  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=49, pos=Offset(196.4, 153.7), 
+active_count=2
+07-28 02:58:03.420  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(196.4, 153.7) -> dot=2 
+(minDist=17.2157933863744, threshold=76.80000000000001)
+07-28 02:58:03.951  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:04.252  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: [1, 2]
+07-28 02:58:04.253  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: Evaluated as tapBraille. Pointers: 
+2, chord: [1, 2]
+07-28 02:58:04.253  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Evaluating tapBraille. targetDots=[1], 
+tappedDots=[1, 2]
+07-28 02:58:04.253  4915  4915 I flutter : [NuruTouch] _evaluateSequenceStep: Result isCorrect=false, 
+errorType=extra_dots
+07-28 02:58:07.568  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:07.569  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:07.870  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: []
+07-28 02:58:07.871  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: CATCH-ALL triggered. Chord is empty, 
+gestures did not match.
+07-28 02:58:09.661  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:09.669  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:09.971  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: []
+07-28 02:58:09.971  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: CATCH-ALL triggered. Chord is empty, 
+gestures did not match.
+07-28 02:58:11.502  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:11.804  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: []
+07-28 02:58:11.805  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: CATCH-ALL triggered. Chord is empty, 
+gestures did not match.
+07-28 02:58:32.722  4915  4915 I flutter : [NuruTouch] _handlePointerDown: pointer=55, pos=Offset(378.0, 382.1), 
+active_count=1
+07-28 02:58:32.723  4915  4915 I flutter : [NuruTouch] _identifyDotZone: pos=Offset(378.0, 382.1) -> dot=-1 
+(minDist=Infinity, threshold=76.80000000000001)
+07-28 02:58:32.772  4915  4915 I flutter : [NuruTouch] _handlePointerUp: All fingers lifted. Starting 300ms 
+_strikeCompletionTimer...
+07-28 02:58:33.074  4915  4915 I flutter : [NuruTouch] _strikeCompletionTimer fired. Evaluating gesture. 
+_currentChord: []
+07-28 02:58:33.074  4915  4915 I flutter : [NuruTouch] _analyzeGestureAndExecute: CATCH-ALL triggered. Chord is empty, 
+gestures did not match.
+
+

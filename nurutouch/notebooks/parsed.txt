@@ -1,0 +1,341 @@
+[markdown]
+# Environment Setup
+This wipes any old attempts, installs the strict PyTorch downgrades for ONNX exporting, and grabs the vital pysilero-vad package so the dataset processes correctly.
+
+[code]
+# 1. Clean Slate & Global Dependencies
+!rm -rf /kaggle/working/piper
+!apt-get update -y -qq
+!apt-get install -y -qq espeak-ng libespeak-ng-dev ffmpeg
+!pip install -q torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1
+!pip install -q scikit-build pybind11 cython
+!pip install -q pysilero-vad onnxscript==0.1.0.dev20240925 onnx==1.16.1 onnxruntime==1.19.0
+
+# THE FIX: Wipe torchcodec BEFORE python boots up
+!pip uninstall -y torchcodec
+
+# 2. Build the Piper Engine & C++ Bindings
+!git clone https://github.com/OHF-Voice/piper1-gpl.git /kaggle/working/piper
+%cd /kaggle/working/piper
+!pip install -q -e .
+!pip install -q lightning "jsonargparse[signatures]>=4.27.7" datasets librosa soundfile
+!python3 setup.py build_ext --inplace
+!chmod +x build_monotonic_align.sh && ./build_monotonic_align.sh
+%cd /kaggle/working
+print("Environment successfully built!")
+
+[markdown]
+# Google WaxalNLP Single-Speaker Dataset
+This downloads the 1,387 single-speaker Swahili phrases and safely extracts the raw audio bytes.
+
+[code]
+!rm -rf /kaggle/working/piper_training
+!rm -rf /kaggle/working/training_run
+!rm -rf /kaggle/working/lightning_logs
+!rm -rf /root/.cache/huggingface
+print("Output directory cleaned!")
+
+[code]
+import os, shutil
+from huggingface_hub import hf_hub_download
+from datasets import load_dataset, Audio
+import soundfile as sf
+import librosa
+import csv
+import io
+import warnings
+warnings.filterwarnings("ignore")
+
+# 1. Base Model (Kept in working directory as it's small)
+os.makedirs("/kaggle/working/base_model", exist_ok=True)
+downloaded = hf_hub_download(
+    repo_id="rhasspy/piper-checkpoints", 
+    filename="sw/sw_CD/lanfrica/medium/epoch=2619-step=1635820.ckpt", 
+    repo_type="dataset", 
+    local_dir="/kaggle/working/base_model"
+)
+shutil.move(downloaded, "/kaggle/working/base_model/base.ckpt")
+
+# 2. Extract Dataset to the 70GB /kaggle/tmp/ drive!
+TMP_DATA_DIR = "/kaggle/tmp/piper_data"
+os.makedirs(f"{TMP_DATA_DIR}/wavs", exist_ok=True)
+
+print("Downloading Google WaxalNLP into Scratch Space...")
+dataset = load_dataset("google/WaxalNLP", "swa_tts", split="train")
+dataset = dataset.cast_column("audio", Audio(decode=False))
+
+with open(f"{TMP_DATA_DIR}/metadata.csv", "w", encoding="utf-8") as f:
+    writer = csv.writer(f, delimiter="|")
+    
+    for i, row in enumerate(dataset):
+        text = row.get("sentence", row.get("text", row.get("transcription", row.get("transcript", ""))))
+        
+        audio_data = row["audio"]["bytes"]
+        if audio_data:
+            y, sr = sf.read(io.BytesIO(audio_data))
+        else:
+            y, sr = sf.read(row["audio"]["path"])
+            
+        if len(y.shape) > 1: y = y.mean(axis=1)
+            
+        audio_array = librosa.resample(y=y, orig_sr=sr, target_sr=16000)
+        sf.write(f"{TMP_DATA_DIR}/wavs/sw_{i}.wav", audio_array, 16000)
+        writer.writerow([f"sw_{i}", text])
+
+print(f"Dataset safely isolated in /kaggle/tmp! {len(dataset)} phrases ready.")
+
+[markdown]
+# Accelerated Trainer
+This includes the accumulate_grad_batches 4 parameter, which forces the model to learn deeply and smoothly. Run this cell and let it process for 2 hours and 45 minutes, then hit the Stop button.
+
+[code]
+import csv
+import soundfile as sf
+import os
+
+print("Scanning for VRAM-crashing audio files...")
+
+# 1. Nuke the corrupted cache from the crash
+os.system("rm -rf /kaggle/tmp/training_run/cache")
+os.system("rm -rf /kaggle/tmp/lightning_logs")
+
+input_csv = "/kaggle/tmp/piper_data/metadata.csv"
+output_csv = "/kaggle/tmp/piper_data/metadata_filtered.csv"
+MAX_SECONDS = 10.0  # The absolute safety limit for a 15GB GPU
+
+kept = 0
+skipped = 0
+
+with open(input_csv, "r", encoding="utf-8") as fin, open(output_csv, "w", encoding="utf-8", newline="") as fout:
+    reader = csv.reader(fin, delimiter="|")
+    writer = csv.writer(fout, delimiter="|")
+    
+    for row in reader:
+        if len(row) < 2: continue
+        wav_path = f"/kaggle/tmp/piper_data/wavs/{row[0]}.wav"
+        
+        if os.path.exists(wav_path):
+            info = sf.info(wav_path)
+            duration = info.frames / info.samplerate
+            
+            # If it's under 10 seconds, keep it. If it's over, drop it.
+            if duration <= MAX_SECONDS:
+                writer.writerow(row)
+                kept += 1
+            else:
+                skipped += 1
+
+print(f"Filtering complete!")
+print(f"Kept {kept} safe files.")
+print(f"Skipped {skipped} massive files that were crashing the GPU.")
+
+[code]
+%%writefile run_trainer.py
+import torch
+import sys
+import os
+from piper.train.__main__ import main
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+ckpt_path = "/kaggle/working/base_model/base.ckpt"
+
+_original_load = torch.load
+def _patched_load(*args, **kwargs):
+    kwargs['weights_only'] = False
+    return _original_load(*args, **kwargs)
+torch.load = _patched_load
+
+if os.path.exists(ckpt_path):
+    checkpoint = torch.load(ckpt_path, map_location="cpu")
+    if "hyper_parameters" in checkpoint:
+        del checkpoint["hyper_parameters"]
+        torch.save(checkpoint, ckpt_path)
+
+sys.argv = [
+    "piper.train", "fit",
+    "--data.voice_name", "sw_finetune",
+    "--data.csv_path", "/kaggle/tmp/piper_data/metadata_filtered.csv",  # 🚨 THE FIX: Pointing to the safe dataset
+    "--data.audio_dir", "/kaggle/tmp/piper_data/wavs",        
+    "--model.sample_rate", "22050",
+    "--data.espeak_voice", "sw",
+    "--data.trim_silence", "false",
+    "--data.cache_dir", "/kaggle/tmp/training_run/cache",     
+    "--data.config_path", "/kaggle/tmp/training_run/config.json",
+    "--data.batch_size", "1",                  
+    "--ckpt_path", ckpt_path,
+    "--trainer.default_root_dir", "/kaggle/tmp",              
+    "--trainer.max_epochs", "9999",
+    "--trainer.accelerator", "gpu",
+    "--trainer.devices", "1",
+    "--trainer.precision", "16-mixed"          
+]
+
+if __name__ == "__main__":
+    main()
+
+[code]
+!python3 run_trainer.py
+
+[markdown]
+# The Hybrid ONNX Exporter
+This cell targets your safe, persistent /kaggle/working folder, grabs the highest epoch checkpoint you reached, and packages it into the lightweight .onnx and .json files your Flutter app requires.
+
+[code]
+import glob
+import os
+import shutil
+import re
+
+print("Launching deep scan for your checkpoints across the entire hard drive...")
+
+# Search EVERYWHERE recursively in both the Working and Scratch drives
+all_ckpts = glob.glob("/kaggle/working/**/*.ckpt", recursive=True) + glob.glob("/kaggle/tmp/**/*.ckpt", recursive=True)
+
+# Filter out the downloaded base model (we only want your new progress)
+valid_ckpts = [f for f in all_ckpts if "base_model" not in f and "base.ckpt" not in f]
+
+if not valid_ckpts:
+    print("Critical Error: No progress checkpoints found on the drive.")
+    print("Let's look at what Kaggle actually saved so we can debug:")
+    print("--- Working Drive ---")
+    os.system("ls -la /kaggle/working/")
+    print("--- Lightning Logs ---")
+    os.system("ls -la /kaggle/working/lightning_logs/")
+else:
+    # Extract the exact epoch number to find the newest one
+    def get_epoch(filepath):
+        match = re.search(r'epoch=(\d+)', filepath)
+        return int(match.group(1)) if match else 0
+    
+    valid_ckpts.sort(key=get_epoch, reverse=True)
+    latest_ckpt = valid_ckpts[0]
+    
+    print(f"Found your hidden progress! Exporting from: {latest_ckpt}")
+    
+    # Apply the ONNX patch
+    file_path = "/kaggle/working/piper/src/piper/train/vits/transforms.py"
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            code = f.read()
+        with open(file_path, "w") as f:
+            f.write(code.replace("assert (discriminant >= 0).all(), discriminant", "# assert (discriminant >= 0).all(), discriminant"))
+
+    # Export the model
+    exit_code = os.system(f"python3 -m piper.train.export_onnx --checkpoint {latest_ckpt} --output-file /kaggle/working/swahili_app_ready.onnx")
+    
+    if exit_code == 0:
+        # Find and copy the config JSON from wherever the trainer hid it
+        if os.path.exists("/kaggle/working/config.json"):
+            shutil.copy("/kaggle/working/config.json", "/kaggle/working/swahili_app_ready.onnx.json")
+        elif os.path.exists("/kaggle/tmp/training_run/config.json"):
+            shutil.copy("/kaggle/tmp/training_run/config.json", "/kaggle/working/swahili_app_ready.onnx.json")
+        elif len(glob.glob("/kaggle/working/**/*.json", recursive=True)) > 0:
+            # Fallback: just grab the first JSON it can find that isn't the base one
+            shutil.copy(glob.glob("/kaggle/working/**/*.json", recursive=True)[0], "/kaggle/working/swahili_app_ready.onnx.json")
+        
+        print("SUCCESS! The deep scan worked. Your final files are generated.")
+        print("Refresh your Kaggle sidebar and download:")
+        print("1. swahili_app_ready.onnx")
+        print("2. swahili_app_ready.onnx.json")
+    else:
+        print("ONNX Export failed. See logs above.")
+
+[code]
+import glob
+import os
+import shutil
+import re
+
+print("Locating your highest training checkpoint...")
+
+# Scan for all checkpoints, ignoring the original downloaded base model
+all_ckpts = glob.glob("/kaggle/working/**/*.ckpt", recursive=True) + glob.glob("/kaggle/tmp/**/*.ckpt", recursive=True)
+valid_ckpts = [f for f in all_ckpts if "base_model" not in f and "base.ckpt" not in f]
+
+if not valid_ckpts:
+    print("Could not find any custom checkpoints.")
+else:
+    # Function to extract the exact epoch number
+    def get_epoch(filepath):
+        match = re.search(r'epoch=(\d+)', filepath)
+        return int(match.group(1)) if match else 0
+    
+    # Sort and grab the highest one
+    valid_ckpts.sort(key=get_epoch, reverse=True)
+    latest_ckpt = valid_ckpts[0]
+    epoch_num = get_epoch(latest_ckpt)
+    
+    # Create a clean, obvious filename
+    save_name = f"/kaggle/working/my_progress_epoch_{epoch_num}.ckpt"
+    
+    print(f"Found your progress at Epoch {epoch_num}!")
+    print(f"Copying to a safe download location...")
+    
+    shutil.copy(latest_ckpt, save_name)
+    
+    print(f"SUCCESS! Your progress is saved as: my_progress_epoch_{epoch_num}.ckpt")
+    print("Refresh the right-hand Kaggle sidebar (under Output).")
+    print("Click the three dots next to the file and hit 'Download'.")
+
+[code]
+%%writefile run_trainer.py
+import torch
+import sys
+import os
+import glob
+from piper.train.__main__ import main
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
+# SMART CHECKPOINT PICKER
+# Search for your saved checkpoint in the working directory
+saved_progress = glob.glob("/kaggle/working/my_progress_epoch_*.ckpt")
+
+if saved_progress:
+    # If your custom progress checkpoint exists, use it to resume!
+    ckpt_path = max(saved_progress, key=os.path.getctime)
+    print(f"RESUMING TRAINING from your saved progress checkpoint: {ckpt_path}")
+else:
+    # Fallback to the base model if no custom progress is found
+    ckpt_path = "/kaggle/working/base_model/base.ckpt"
+    print(f"STARTING FRESH from base model: {ckpt_path}")
+
+# Apply the PyTorch Lightning version compatibility patch
+_original_load = torch.load
+def _patched_load(*args, **kwargs):
+    kwargs['weights_only'] = False
+    return _original_load(*args, **kwargs)
+torch.load = _patched_load
+
+if os.path.exists(ckpt_path):
+    checkpoint = torch.load(ckpt_path, map_location="cpu")
+    if "hyper_parameters" in checkpoint:
+        del checkpoint["hyper_parameters"]
+        torch.save(checkpoint, ckpt_path)
+
+sys.argv = [
+    "piper.train", "fit",
+    "--data.voice_name", "sw_finetune",
+    "--data.csv_path", "/kaggle/tmp/piper_data/metadata_filtered.csv", 
+    "--data.audio_dir", "/kaggle/tmp/piper_data/wavs",                 
+    "--model.sample_rate", "22050",
+    "--data.espeak_voice", "sw",
+    "--data.trim_silence", "false",
+    "--data.cache_dir", "/kaggle/tmp/training_run/cache",              
+    "--data.config_path", "/kaggle/working/config.json",               
+    "--data.batch_size", "1",                  
+    "--ckpt_path", ckpt_path,                                          # Pointed to your smart picker
+    "--trainer.default_root_dir", "/kaggle/working",                   
+    "--trainer.max_epochs", "9999",
+    "--trainer.accelerator", "gpu",
+    "--trainer.devices", "1",
+    "--trainer.precision", "16-mixed"          
+]
+
+if __name__ == "__main__":
+    main()
+
+[code]
+!python3 run_trainer.py
+
+[code]
