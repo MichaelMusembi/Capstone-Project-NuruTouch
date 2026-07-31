@@ -8,6 +8,7 @@ These images serve as technical proof of the application's offline machine learn
 Contains structural diagrams defining the software design of the application.
 - **[System Architecture Diagram](architecture/system-architecture-diagram.png)**: Showcases the strict Layered Singleton Architecture (Presentation, Service, Domain, Data) and how the isolated UI overlays communicate with the SQLite database.
 - **[Machine Learning Pipeline](architecture/machine-learning-pipeline.png)**: Visualizes the on-device biometric authentication and text-to-speech generation flows, explicitly mapping the use of Google ML Kit, MobileFaceNet, and the fine-tuned Swahili Piper VITS ONNX model.
+- **[Adaptive Geometric Calibration ML Model](architecture/adaptive-calibration-model.png)**: Explains the calibration engine's logic, including Geometric Initialization (6 centroids), KNN Centroid Matching for classification, and Online Learning via EMA drift (10%) to adapt to hand shifts.
 - **[High-Level Class Diagram](architecture/high-level-class-diagram.png)**: Maps the relationships between the core singleton services, including the Adaptive Learning Engine, TTS Audio Engine, and Database Helper.
 
 ## 🔄 Sequence Diagrams
