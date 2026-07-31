@@ -4,19 +4,19 @@ This directory contains the core technical diagrams, evaluation sequences, and a
 
 These images serve as technical proof of the application's offline machine learning accuracy and adaptive learning progression.
 
-## 🏗️ Architecture
+## Architecture
 Contains structural diagrams defining the software design of the application.
 - **[System Architecture Diagram](architecture/system-architecture-diagram.png)**: Showcases the strict Layered Singleton Architecture (Presentation, Service, Domain, Data) and how the isolated UI overlays communicate with the SQLite database.
 - **[Machine Learning Pipeline](architecture/machine-learning-pipeline.png)**: Visualizes the on-device biometric authentication and text-to-speech generation flows, explicitly mapping the use of Google ML Kit, MobileFaceNet, and the fine-tuned Swahili Piper VITS ONNX model.
 - **[Adaptive Geometric Calibration ML Model](architecture/adaptive-calibration-model.png)**: Explains the calibration engine's logic, including Geometric Initialization (6 centroids), KNN Centroid Matching for classification, and Online Learning via EMA drift (10%) to adapt to hand shifts.
 - **[High-Level Class Diagram](architecture/high-level-class-diagram.png)**: Maps the relationships between the core singleton services, including the Adaptive Learning Engine, TTS Audio Engine, and Database Helper.
 
-## 🔄 Sequence Diagrams
+## Sequence Diagrams
 Contains logical flow diagrams for the core interactions in the app.
 - **[Braille Evaluation Sequence](sequences/braille-evaluation-sequence-diagram.png)**: Maps the lifecycle of a multi-touch Braille chord input—from pointer detection, heuristic centroid matching, and haptic feedback, to scoring and database writing.
 - **[Facial Enrolment Sequence](sequences/facial-enrolment-sequence-diagram.png)**: Details the background biometric pipeline, showing how Google ML Kit extracts a bounding box and TFLite runs MobileFaceNet asynchronously in an isolate to compute a 128D embedding.
 
-## 📊 Analytics & Accuracy Charts
+## Analytics & Accuracy Charts
 Contains raw data visualizations proving the efficacy of the ML models and learning engine.
 - **[Facial Recognition Accuracy](analytics/facial-recognition-accuracy-chart.png)**: A scatter plot demonstrating the Cosine Similarity scores between enrolled targets and imposters over 25 login attempts.
 - **[First-Attempt Success Rate](analytics/first-attempt-success-rate-chart.png)**: A bar chart detailing the accuracy with which children successfully inputted specific Braille letters (e.g., Letter A vs. Letter G) on their first try.
