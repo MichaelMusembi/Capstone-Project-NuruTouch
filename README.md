@@ -86,13 +86,13 @@ NuruTouch relies on a suite of highly optimized edge-ML models that run entirely
 > **Status**: Final Capstone Submission  
 > **Domain**: Accessible EdTech (Machine Learning & Edge AI)
 
-## 📥 Download App
+## Download App
 The fully compiled Android APK is available on GitHub Releases:
-* **[Download NuruTouch v1.0 APK](https://github.com/MichaelMusembi/Capstone-Project-NuruTouch/releases/latest/download/app-release.apk)** *(Requires Android 9.0+)*
+* **[Download NuruTouch v1.0 APK](https://github.com/MichaelMusembi/Capstone-Project-NuruTouch/releases/download/Release_APK/app-release.apk)** *(Requires Android 9.0+)*
 
 ---
 
-## 🏗️ Architecture & Diagnostic Calibration
+## Architecture & Diagnostic Calibration
 ### Adaptive Geometric Calibration (Online Learning)
 * **Architecture:** Dynamic Heuristic Clustering.
 * **KNN Centroid Matching:** During active lessons, the system acts as a localized K-Nearest Neighbors (KNN) classifier. It calculates the Euclidean distance of incoming touch coordinates to classify which of the six calibrated Braille dots the child intended to strike (using a 200-pixel radius).
@@ -148,4 +148,4 @@ flutter run --release
 ## 8. Additional Links
 
 * [Technical Walkthrough Video](https://drive.google.com/drive/folders/1JQh8Nml7C00Woo0qx46Qj86XNQavvkUX?usp=sharing)
-* [Download NuruTouch APK (283 MB)](INSERT_GITHUB_RELEASE_LINK_HERE)
+* [Download NuruTouch APK (250 MB)](https://github.com/MichaelMusembi/Capstone-Project-NuruTouch/releases/download/Release_APK/app-release.apk)
