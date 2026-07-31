@@ -21,10 +21,12 @@ lib/
 │   │   ├── orientation_screen.dart # Initial spatial orientation
 │   │   └── raw_touch_screen.dart   # Core learning engine & touch listener
 │   ├── splash/
-│   │   └── gateway_screen.dart     # Language selection entry point
-│   └── supervisor/
-│       ├── dashboard_screen.dart   # Teacher/Parent statistics view
-│       └── global_pin_gate.dart    # Global gesture interceptor
+│   ├── role_selection_screen.dart  # Teacher vs Student selection
+│   ├── student_facial_login_screen.dart # Biometric Authentication
+│   └── gateway_screen.dart         # Language selection entry point
+├── supervisor/
+│   ├── dashboard_screen.dart   # Teacher/Parent statistics view
+│   └── global_pin_gate.dart    # Global gesture interceptor
 ├── models/
 │   └── braille_record.dart         # SM-2 state tracking model
 ├── services/
@@ -60,9 +62,11 @@ The system achieves its low-memory requirements by avoiding heavy frameworks (li
 ## 3. System Navigation & User Flow
 
 ### Programmatic User Journey
-1. **Gateway (`gateway_screen.dart`):** The entry point where a left/right swipe sets the global `ValueNotifier<String>` to "en" or "sw".
-2. **Calibration & Orientation:** The user receives localized instructions and must place 6 fingers on the screen simultaneously. The `RawTouchScreen` calculates the spatial coordinates of each finger, saving the mapping to `AppState().calibratedDots`.
-3. **Core Loop (`raw_touch_screen.dart`):** The user stays on this screen indefinitely. Progression is not handled by routing (`Navigator.push`), but by the `CurriculumEngine` fetching the next lesson dynamically and re-rendering the prompt.
+1. **Role Selection (`role_selection_screen.dart`):** The user selects whether they are a Teacher or a Student.
+2. **Biometric Login (`student_facial_login_screen.dart`):** The student is authenticated via the device camera using Google ML Kit and a quantized MobileFaceNet TFLite model, bypassing passwords entirely.
+3. **Gateway (`gateway_screen.dart`):** The language selection entry point (English vs Swahili).
+4. **Calibration & Orientation:** The user receives localized instructions and must place 6 fingers on the screen simultaneously. The `RawTouchScreen` calculates the spatial coordinates of each finger using Heuristic Clustering, saving the mapping to `AppState().calibratedDots`.
+5. **Core Loop (`raw_touch_screen.dart`):** The user stays on this screen indefinitely. Progression is handled by the `CurriculumEngine` fetching the next lesson dynamically and re-rendering the prompt.
 
 ### Global Gestures & Interception
 * **2-Finger Swipe Down (Go Back):** Handled in the `_analyzeGestureAndExecute` method of `RawTouchScreen`. If `dx/dy` indicates a downward swipe and exactly 2 pointers were active, it triggers `Navigator.pop()`.
@@ -81,9 +85,16 @@ Implemented via `HapticService`. The app uses temporal encoding mapped to ERM (E
 ### Audio & TTS
 The app utilizes a dual-engine wrapper (`tts_service.dart`):
 * **English:** Passed to the native `flutter_tts` plugin which hooks into Android/iOS system voices.
-* **Swahili:** Passed to `SwahiliTTSEngine`. The engine uses a custom phoneme dictionary (`assets/mms_model/sw_fine-tuned-medium.onnx.json`) to tokenize Swahili text into ID arrays, feeds it into the Piper ONNX graph, and outputs a raw Float32 audio waveform.
+* **Swahili:** Passed to `SwahiliTTSEngine`. The engine uses a custom phoneme dictionary to tokenize Swahili text into ID arrays, feeds it into the Piper ONNX graph, and outputs a raw Float32 audio waveform.
 
-*Note: The prompt references constrained FST graphs and Sherpa-ONNX ASR. In the current active implementation, the app relies purely on the 6-finger spatial calibration grid (touch input) for assessment. Voice Input (ASR) is not currently an active file in the `lib` directory.*
+### Biometric Authentication & Pose Estimation
+* **Face Detection:** Utilizes **Google ML Kit** to rapidly detect the user's facial bounding box and calculate head yaw angles directly from the live camera feed.
+* **Feature Extraction (MobileFaceNet):** A quantized **TFLite** MobileFaceNet model extracts a unique 128-dimensional numerical embedding.
+* **Authentication Logic:** The system uses **Cosine Similarity** to compare live embeddings against stored profiles, granting access at a relaxed similarity threshold (0.20) to account for sub-optimal camera angles used by children.
+
+### Adaptive Geometric Calibration
+* **KNN Centroid Matching:** Calculates Euclidean distance of incoming touch coordinates to classify which of the six calibrated Braille dots the child intended to strike (200-pixel radius).
+* **EMA Drift Adaptation:** Utilizes an Exponential Moving Average (EMA) to drift centroids by 10% towards the new touch point on successful taps, seamlessly adapting to the child's hand drifting across the glass over time.
 
 ---
 
