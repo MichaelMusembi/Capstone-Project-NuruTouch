@@ -8,7 +8,7 @@
 
 **An offline-first Android application designed to teach Braille literacy to blind and low-vision children in Kenya using commodity smartphones.**
 
-[Download NuruTouch APK (250 MB)](https://github.com/MichaelMusembi/Capstone-Project-NuruTouch/releases/latest/download/app-release.apk)
+[Download NuruTouch APK (250 MB)](https://github.com/MichaelMusembi/Capstone-Project-NuruTouch/releases/download/Release_APK/app-release.apk)
 
 ***
 
